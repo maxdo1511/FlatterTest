@@ -1,16 +1,7 @@
-# faltter_test_pro
+# Дорошко Максим Игоревич ЭФБО-02-22
 
-A new Flutter project.
+## Компиляция под android
+![r1_phone](https://github.com/user-attachments/assets/726e3abc-54ee-4abd-afd7-3d0a6f0beb5b)
 
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## под google chrome
+![r1_desktop](https://github.com/user-attachments/assets/89ee02ee-c149-40ec-8ab6-d642f60cccce)
