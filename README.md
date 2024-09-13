@@ -1,7 +1,8 @@
 # Дорошко Максим Игоревич ЭФБО-02-22
 
 ## Компиляция под android
-![r1_phone](https://github.com/user-attachments/assets/726e3abc-54ee-4abd-afd7-3d0a6f0beb5b)
+![Снимок](https://github.com/user-attachments/assets/f546b115-f267-434b-af02-9905910c710d)
 
 ## под google chrome
-![r1_desktop](https://github.com/user-attachments/assets/89ee02ee-c149-40ec-8ab6-d642f60cccce)
+![Снимок1](https://github.com/user-attachments/assets/fd30dc51-53ea-4942-8f02-6abb9c089510)
+
