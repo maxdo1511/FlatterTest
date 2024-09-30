@@ -121,9 +121,80 @@ class CatalogPageState extends State<CatalogPage> {
     }),
   ];
 
-  void addProduct(ProductCard productCard) {
+  List<String> filters = [];
+
+  List<String> getCategories(List<ProductCard> products) {
+    return products.map((product) => product.category).toSet().toList();
+  }
+
+  List<ProductCard> getFilteredProducts(List<ProductCard> products) {
+    if (filters.isEmpty) {
+      return products;
+    }
+    return products.where((product) => filters.contains(product.category)).toList();
+  }
+
+  String? addProduct(ProductCard productCard) {
+    // validate
+
+    // check empty
+    if (productCard.id.isEmpty || productCard.name.isEmpty || productCard.price.isEmpty || productCard.category.isEmpty || productCard.rarity.isEmpty) {
+      return "Заполните все поля";
+    }
+
+    // check id
+    if (productCard.id.length != 3) {
+      return "ID должен содержать 3 символа";
+    }
+    if (productCard.id.contains(RegExp(r'[^0-9]'))) {
+      return "ID должен содержать только цифры";
+    }
+    if (products.map((product) => product.id).contains(productCard.id)) {
+      return "Такой ID уже существует";
+    }
+
+    // check name
+    if (productCard.name.length < 3) {
+      return "Слишком короткое название";
+    }
+    if (products.map((product) => product.name.toLowerCase().replaceAll(" ", "")).contains(productCard.name.toLowerCase().replaceAll(" ", ""))) {
+      return "Такое название уже существует";
+    }
+
+    // check price
+    if (productCard.price.contains(RegExp(r'[^0-9]'))) {
+      return "Цена должна содержать только цифры";
+    }
+
+    // check category
+    if (productCard.category.length > 3) {
+      return "Категория должна состоять из 3-х символов";
+    }
+    if (productCard.category.contains(RegExp(r'[a-zA-Z]'))) {
+      return "Категория должна состоять только из латинских букв";
+    }
+
+    // check rarity
+    if (!rarities.keys.contains(productCard.rarity)) {
+      return "Такой редкости не существует";
+    }
+
+    // add
     setState(() {
       products.add(productCard);
+    });
+    return null;
+  }
+
+  void addFilter(String filter) {
+    setState(() {
+      filters.add(filter);
+    });
+  }
+
+  void removeFilter(String filter) {
+    setState(() {
+      filters.remove(filter);
     });
   }
 
@@ -149,6 +220,35 @@ class CatalogPageState extends State<CatalogPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey[200],
+      bottomNavigationBar: Container(
+        width: MediaQuery.of(context).size.width,
+        height: 40,
+        alignment: Alignment.centerRight,
+        child: ListView.builder(
+          scrollDirection: Axis.horizontal,
+          itemCount: getCategories(products).length,
+          itemBuilder: (BuildContext context, int index) {
+            String category = getCategories(products)[index];
+            return IconButton(
+              icon: Text(category),
+              style: IconButton.styleFrom(
+                  foregroundColor: Colors.black54,
+                  shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(0),
+                  ),
+                  backgroundColor: filters.contains(category) ? Colors.grey : Colors.white
+              ),
+              onPressed: () {
+                if (filters.contains(category)) {
+                  removeFilter(category);
+                } else {
+                  addFilter(category);
+                }
+              },
+            );
+          },
+        ),
+      ),
       appBar: AppBar(
         backgroundColor: Colors.black54,
         titleTextStyle: const TextStyle(
@@ -158,9 +258,9 @@ class CatalogPageState extends State<CatalogPage> {
         title: const Center(child: Text('Minecraft Shop'), ),
       ),
       body: ListView.builder(
-          itemCount: products.length,
+          itemCount: getFilteredProducts(products).length,
           itemBuilder: (BuildContext context, int index) {
-            ProductCard productCard = products[index];
+            ProductCard productCard = getFilteredProducts(products)[index];
             return ProductCardComponent(productCardModel: productCard, rarity: rarities[productCard.rarity]!);
           }
       ),
@@ -172,14 +272,16 @@ class CatalogPageState extends State<CatalogPage> {
             MaterialPageRoute(
               builder: (context) => CreateProductPage (
                 onCreate: (productCard) {
-                  addProduct(productCard);
+                  return addProduct(productCard);
                 },
+                products: products,
+                rarities: rarities.keys.toList(),
               ),
             ),
           );
         },
-        child: const Icon(Icons.add),
-        tooltip: 'Добавить заметку',
+        tooltip: 'Добавить товар',
+        child: const Icon(Icons.add_outlined),
       ),
     );
   }
