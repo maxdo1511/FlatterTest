@@ -4,12 +4,20 @@ import '../../model/product_card.dart';
 import '../../model/rarity.dart';
 import '../product_page.dart';
 
-class ProductCardComponent extends StatelessWidget {
-
-  const ProductCardComponent({super.key, required this.productCardModel, required this.rarity});
+class ProductCardComponent extends StatefulWidget {
 
   final ProductCard productCardModel;
   final Rarity rarity;
+  final Function(ProductCard) onRemove;
+
+  const ProductCardComponent({super.key, required this.productCardModel, required this.rarity, required this.onRemove});
+
+  @override
+  State<ProductCardComponent> createState() => ProductCardComponentState();
+
+}
+
+class ProductCardComponentState extends State<ProductCardComponent> {
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +27,7 @@ class ProductCardComponent extends StatelessWidget {
         onTap: () => Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => ProductPage(productCardModel: productCardModel, rarity: rarity),
+            builder: (context) => ProductPage(productCardModel: widget.productCardModel, rarity: widget.rarity),
           ),
         ),
         child: Container(
@@ -27,7 +35,7 @@ class ProductCardComponent extends StatelessWidget {
             color: Colors.white70,
             borderRadius: BorderRadius.circular(16.0),
             border: Border.all(
-              color: Color(rarity.color),
+              color: Color(widget.rarity.color),
               width: 4.0,
             ),
           ),
@@ -39,21 +47,33 @@ class ProductCardComponent extends StatelessWidget {
               children: [
                 Center(
                   child: Text(
-                    productCardModel.name,
+                    widget.productCardModel.name,
                     style: const TextStyle(fontSize: 34, color: Colors.black),
                   ),
                 ),
                 Text(
-                  productCardModel.description,
+                  widget.productCardModel.description,
                   style: const TextStyle(fontSize: 20, color: Colors.black54),
                 ),
-                Image(image: AssetImage('assets/images/tile${productCardModel.id}.png'), width: 200, height: 200),
+                Image(image: AssetImage('assets/images/tile${widget.productCardModel.id}.png'), width: 200, height: 200),
                 Padding(
                   padding: const EdgeInsets.only(bottom: 20.0),
                   child: Center(
                     child: Text(
-                      "${productCardModel.price}\$",
+                      "${widget.productCardModel.price}\$",
                       style: const TextStyle(fontSize: 24, color: Colors.black),
+                    ),
+                  ),
+                ),
+                ElevatedButton(onPressed: () {
+                  widget.onRemove(widget.productCardModel);
+                },
+                  child: const Text('Удалить', style: TextStyle(fontSize: 20, color: Colors.white),),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.red,
+                    minimumSize: const Size(100, 40),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
                     ),
                   ),
                 )
@@ -65,4 +85,8 @@ class ProductCardComponent extends StatelessWidget {
     );
   }
 
+  @override
+  void initState() {
+    super.initState();
+  }
 }

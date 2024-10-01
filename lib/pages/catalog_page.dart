@@ -170,7 +170,7 @@ class CatalogPageState extends State<CatalogPage> {
     if (productCard.category.length > 3) {
       return "Категория должна состоять из 3-х символов";
     }
-    if (productCard.category.contains(RegExp(r'[a-zA-Z]'))) {
+    if (!productCard.category.contains(RegExp(r'[a-zA-Z]'))) {
       return "Категория должна состоять только из латинских букв";
     }
 
@@ -202,6 +202,10 @@ class CatalogPageState extends State<CatalogPage> {
     setState(() {
       products.remove(productCard);
     });
+    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text('Товар успешно удалён'),
+        backgroundColor: Colors.green
+    ));
   }
 
   void addRarity(Rarity rarity) {
@@ -261,7 +265,16 @@ class CatalogPageState extends State<CatalogPage> {
           itemCount: getFilteredProducts(products).length,
           itemBuilder: (BuildContext context, int index) {
             ProductCard productCard = getFilteredProducts(products)[index];
-            return ProductCardComponent(productCardModel: productCard, rarity: rarities[productCard.rarity]!);
+            return ProductCardComponent(
+                productCardModel: productCard,
+                rarity: rarities[productCard.rarity]!,
+                onRemove: (productCard) {
+                  // Используем addPostFrameCallback для вызова removeProduct после завершения текущей сборки
+                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                    removeProduct(productCard);
+                  });
+                },
+            );
           }
       ),
       floatingActionButton: FloatingActionButton(
