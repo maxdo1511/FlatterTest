@@ -2,5 +2,4 @@
 
 ## Компиляция под android
 
-https://github.com/user-attachments/assets/2dcd7d5c-fe4f-4c5d-864f-958ecc1bd5b3
-
+https://github.com/user-attachments/assets/1dad9579-83a7-4c60-9696-4f724d5d3738
