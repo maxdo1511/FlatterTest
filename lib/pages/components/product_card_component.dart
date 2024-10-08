@@ -8,9 +8,11 @@ class ProductCardComponent extends StatefulWidget {
 
   final ProductCard productCardModel;
   final Rarity rarity;
+  final double size;
   final Function(ProductCard) onRemove;
+  final Function(ProductCard) onSetFavorite;
 
-  const ProductCardComponent({super.key, required this.productCardModel, required this.rarity, required this.onRemove});
+  const ProductCardComponent({super.key, required this.productCardModel, required this.rarity, required this.onRemove, required this.size, required this.onSetFavorite});
 
   @override
   State<ProductCardComponent> createState() => ProductCardComponentState();
@@ -21,66 +23,107 @@ class ProductCardComponentState extends State<ProductCardComponent> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(15.0),
-      child: GestureDetector(
-        onTap: () => Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => ProductPage(productCardModel: widget.productCardModel, rarity: widget.rarity),
-          ),
+
+    int size = widget.size.toInt();
+    double titleSize = 12;
+    if (size > 220) {
+      titleSize = 24;
+    }
+    if (size > 300) {
+      titleSize = 32;
+    }
+
+    return GestureDetector(
+      onTap: () => Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => ProductPage(productCardModel: widget.productCardModel, rarity: widget.rarity),
         ),
-        child: Container(
-          decoration: BoxDecoration(
-            color: Colors.white70,
-            borderRadius: BorderRadius.circular(16.0),
-            border: Border.all(
-              color: Color(widget.rarity.color),
-              width: 4.0,
+      ),
+      child: Stack(
+        children: [
+          Container(
+            decoration: BoxDecoration(
+              color: Colors.white70,
+              borderRadius: BorderRadius.circular(16.0),
+              border: Border.all(
+                color: Color(widget.rarity.color),
+                width: 4.0,
+              ),
             ),
-          ),
-          width: double.infinity,
-          constraints: const BoxConstraints(),
-          child: Padding(
-            padding: const EdgeInsets.all(10.0),
+            padding: const EdgeInsets.all(8.0),
             child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Center(
-                  child: Text(
-                    widget.productCardModel.name,
-                    style: const TextStyle(fontSize: 34, color: Colors.black),
-                  ),
-                ),
-                Text(
-                  widget.productCardModel.description,
-                  style: const TextStyle(fontSize: 20, color: Colors.black54),
-                ),
-                Image(image: AssetImage('assets/images/tile${widget.productCardModel.id}.png'), width: 200, height: 200),
                 Padding(
-                  padding: const EdgeInsets.only(bottom: 20.0),
-                  child: Center(
-                    child: Text(
-                      "${widget.productCardModel.price}\$",
-                      style: const TextStyle(fontSize: 24, color: Colors.black),
-                    ),
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    children: [
+                      Center(
+                        child: Text(
+                          widget.productCardModel.name,
+                          style: TextStyle(fontSize: titleSize, color: Colors.black),
+                        ),
+                      ),
+                      FittedBox(
+                        child: Text(
+                          widget.productCardModel.description,
+                          style: TextStyle(fontSize: titleSize / 2, color: Colors.black54),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-                ElevatedButton(onPressed: () {
-                  widget.onRemove(widget.productCardModel);
-                },
-                  child: const Text('Удалить', style: TextStyle(fontSize: 20, color: Colors.white),),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.red,
-                    minimumSize: const Size(100, 40),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
+                Column(
+                  children: [
+                    SizedBox(
+                      height: 100,
+                      width: 100,
+                      child: Image(
+                        image: AssetImage('assets/images/tile${widget.productCardModel.id}.png'),
+                        fit: BoxFit.cover,
+                      ),
                     ),
-                  ),
+                    Center(
+                      child: Text(
+                        "${widget.productCardModel.price}\$",
+                        style: TextStyle(fontSize: titleSize / 2, color: Colors.black),
+                      ),
+                    ),
+                  ],
+                ),
+                Column(
+                  children: [
+                    ElevatedButton(onPressed: () {
+                      widget.onRemove(widget.productCardModel);
+                    },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.red,
+                        minimumSize: Size(size / 3, size / 3 * 0.2),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                      child: Text('Удалить', style: TextStyle(fontSize: titleSize/1.2, color: Colors.white),),
+                    ),
+                  ],
                 )
               ],
+
             ),
           ),
-        ),
+          Positioned(
+            top: 4.0, // Расположение кнопки по вертикали
+            right: 4.0, // Расположение кнопки по горизонтали
+            child: IconButton(
+              icon: const Icon(Icons.favorite), // Иконка сердечка
+              color: widget.productCardModel.isFavorite ? Colors.red : Colors.grey, // Цвет иконки
+              onPressed: () {
+                widget.onSetFavorite(widget.productCardModel);
+              },
+            ),
+          ),
+        ]
       ),
     );
   }

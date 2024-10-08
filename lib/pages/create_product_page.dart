@@ -127,7 +127,7 @@ class CreateProductPageState extends State<CreateProductPage> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Column(
+        child: ListView(
           children: [
             TextField(
               controller: _idController,
@@ -205,6 +205,7 @@ class CreateProductPageState extends State<CreateProductPage> {
                   category: _categoryController.text,
                   price: _priceController.text,
                   rarity: _rarityController.text,
+                  isFavorite: false,
                 );
                 var result = widget.onCreate(productCard);
                 if (result != null) {

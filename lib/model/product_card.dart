@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 class ProductCard {
 
   late String id;
@@ -6,8 +8,9 @@ class ProductCard {
   late String price;
   late String category;
   late String rarity;
+  late bool isFavorite;
 
-  ProductCard({required this.id, required this.name, required this.description, required this.price, required this.category, required this.rarity});
+  ProductCard({required this.id, required this.name, required this.description, required this.price, required this.category, required this.rarity, required this.isFavorite});
 
   factory ProductCard.fromJson(Map<String, dynamic> json) {
     return ProductCard(
@@ -17,6 +20,7 @@ class ProductCard {
       price: json['price'],
       category: json['category'],
       rarity: json['rarity'],
+      isFavorite: json['isFavorite'] ?? false,
     );
   }
 
