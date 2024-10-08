@@ -1,0 +1,10 @@
+{
+  "id": "diamond_helmet",
+  "name": "Diamond Helmet",
+  "description": "A helmet made of diamonds.",
+  "price": 50,
+  "row": 0,
+  "column": 0,
+  "category": "helmet",
+  "rarity": "common"
+}
